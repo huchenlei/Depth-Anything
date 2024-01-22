@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "depth_anything"
+readme = "README.md"
+version = "2024.01.22.0"
+dependencies = [
+    "torch",
+    "torchvision",
+    "opencv-python",
+]
+
+[project.urls]
+Documentation = "https://github.com/LiheYoung/Depth-Anything"
+Issues = "https://github.com/LiheYoung/Depth-Anything/issues"
+Source = "https://github.com/LiheYoung/Depth-Anything"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "depth_anything",
+]
