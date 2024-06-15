@@ -9,7 +9,7 @@ from torchvision.transforms import Compose
 import tempfile
 from gradio_imageslider import ImageSlider
 
-from depth_anything.dpt import DPT_DINOv2
+from depth_anything.dpt import DepthAnything
 from depth_anything.util.transform import Resize, NormalizeImage, PrepareForNet
 
 css = """
@@ -24,11 +24,11 @@ css = """
     }
 """
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-model = DPT_DINOv2(encoder='vitl', features=256, out_channels=[256, 512, 1024, 1024]).to(DEVICE).eval()
-model.load_state_dict(torch.load('checkpoints/depth_anything_vitl14.pth'))
+model = DepthAnything.from_pretrained('LiheYoung/depth_anything_vitl14').to(DEVICE).eval()
 
 title = "# Depth Anything"
 description = """Official demo for **Depth Anything: Unleashing the Power of Large-Scale Unlabeled Data**.
+
 Please refer to our [paper](https://arxiv.org/abs/2401.10891), [project page](https://depth-anything.github.io), or [github](https://github.com/LiheYoung/Depth-Anything) for more details."""
 
 transform = Compose([
@@ -49,7 +49,6 @@ transform = Compose([
 def predict_depth(model, image):
     return model(image)
 
-
 with gr.Blocks(css=css) as demo:
     gr.Markdown(title)
     gr.Markdown(description)
@@ -58,7 +57,7 @@ with gr.Blocks(css=css) as demo:
 
     with gr.Row():
         input_image = gr.Image(label="Input Image", type='numpy', elem_id='img-display-input')
-        depth_image_slider = ImageSlider(label="Depth Map with Slider View", elem_id='img-display-output', position=0)
+        depth_image_slider = ImageSlider(label="Depth Map with Slider View", elem_id='img-display-output', position=0.5)
     raw_file = gr.File(label="16-bit raw depth (can be considered as disparity)")
     submit = gr.Button("Submit")
 
@@ -90,7 +89,7 @@ with gr.Blocks(css=css) as demo:
     example_files.sort()
     example_files = [os.path.join('assets/examples', filename) for filename in example_files]
     examples = gr.Examples(examples=example_files, inputs=[input_image], outputs=[depth_image_slider, raw_file], fn=on_submit, cache_examples=False)
-
+    
 
 if __name__ == '__main__':
     demo.queue().launch()
