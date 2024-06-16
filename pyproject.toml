@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "depth_anything"
 readme = "README.md"
-version = "2024.01.22.0"
+version = "2024.06.15.0"
 dependencies = [
     "torch",
     "torchvision",
